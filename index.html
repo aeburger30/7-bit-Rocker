@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7-Bit Rocker (7BR) - Mockup</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-cyan: #00ffff;
+            --neon-yellow: #ffff00;
+            --neon-green: #00ff00;
+            --dark-bg: #1a1a1a;
+            --darker-bg: #111;
+            --text-color: #eee;
+            --pixel-font: 'Press Start 2P', cursive;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: var(--pixel-font);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-transform: uppercase;
+            overflow: hidden;
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.3),
+                rgba(0, 0, 0, 0.3) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+        }
+
+        .container {
+            width: 800px;
+            height: 600px;
+            background-color: var(--darker-bg);
+            border: 4px solid var(--neon-cyan);
+            box-shadow: 0 0 20px var(--neon-cyan);
+            padding: 2rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-pink);
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 8px var(--neon-yellow);
+        }
+
+        .logo-abbr {
+            font-size: 1.5rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .btn {
+            font-family: var(--pixel-font);
+            font-size: 1rem;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 3px solid var(--neon-yellow);
+            color: var(--neon-yellow);
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 2rem;
+            transition: all 0.2s;
+            box-shadow: 0 0 10px var(--neon-yellow);
+        }
+
+        .btn:hover {
+            background: var(--neon-yellow);
+            color: var(--darker-bg);
+            box-shadow: 0 0 20px var(--neon-yellow), 0 0 30px var(--neon-yellow);
+        }
+        
+        .btn-small {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        .btn-small:hover {
+            background: var(--neon-pink);
+            color: var(--darker-bg);
+            box-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        .slots-container {
+            width: 100%;
+            max-width: 600px;
+            overflow-y: auto;
+            max-height: 350px;
+        }
+        .instrument-slot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border: 2px solid #555;
+            padding: 0.5rem 1rem;
+        }
+        .instrument-slot span {
+            font-size: 1rem;
+            margin-right: 1rem;
+        }
+        .instrument-slot .file-name {
+            font-size: 0.7rem;
+            color: var(--neon-green);
+            flex-grow: 1;
+            text-align: right;
+            margin-right: 1rem;
+        }
+        .instrument-slot .load-btn {
+            font-size: 0.8rem;
+            padding: 0.5rem;
+            color: var(--neon-cyan);
+            border-color: var(--neon-cyan);
+        }
+         .instrument-slot .load-btn:hover {
+            background: var(--neon-cyan);
+            color: var(--darker-bg);
+        }
+        
+        .rocker-animation {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid var(--neon-pink);
+        }
+        .rocker-head {
+            width: 50px;
+            height: 50px;
+            background-color: #ddd;
+            position: absolute;
+            top: 20px;
+            left: 50px;
+        }
+        .rocker-hair {
+            width: 100px;
+            height: 80px;
+            background-color: var(--neon-yellow);
+            position: absolute;
+            top: 10px;
+            left: 25px;
+            animation: headbang 0.2s infinite;
+        }
+        @keyframes headbang {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(30px) rotate(5deg); }
+        }
+
+        .progress-bar {
+            width: 80%;
+            height: 30px;
+            border: 3px solid var(--neon-green);
+            margin-top: 2rem;
+            position: relative;
+        }
+        .progress-bar-fill {
+            width: 0%;
+            height: 100%;
+            background-color: var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+            transition: width 0.5s ease-out;
+        }
+        #status-text {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--neon-cyan);
+            height: 1em;
+        }
+        
+        .tabs {
+            display: flex;
+            width: 100%;
+            border-bottom: 3px solid var(--neon-pink);
+        }
+        .tab {
+            padding: 0.5rem 1rem;
+            border: 3px solid transparent;
+            border-bottom: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-bottom: -3px;
+        }
+        .tab.active {
+            border-color: var(--neon-pink);
+            background-color: var(--darker-bg);
+            color: var(--neon-pink);
+        }
+        .preview-content {
+            width: 100%;
+            height: 350px;
+            border: 3px solid var(--neon-pink);
+            border-top: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: repeating-linear-gradient(var(--darker-bg) 0, var(--darker-bg) 19.5%, #333 20%, #333 20.5%),
+                              repeating-linear-gradient(90deg, #444 0, #444 2%, transparent 2%, transparent 98%);
+            background-size: 100% 100%, 10% 100%;
+        }
+        .preview-content span { color: #888; }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: var(--darker-bg);
+            border: 3px solid var(--neon-yellow);
+            padding: 2rem;
+            width: 70%;
+            max-width: 600px;
+            font-size: 0.7rem;
+            line-height: 1.5;
+        }
+        .modal-content h3 {
+             color: var(--neon-yellow);
+             text-align: center;
+        }
+        .modal-content p {
+            margin-bottom: 1.5rem;
+        }
+        .modal-close {
+            margin: 1.5rem auto 0;
+            display: block;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <div id="screen-main" class="screen active">
+            <h1>7-Bit Rocker</h1>
+            <p class="logo-abbr">7BR</p>
+            <button class="btn" onclick="showScreen('screen-soundcheck')">[ Start a New Session ]</button>
+            <button class="btn btn-small" onclick="showModal('faq-modal')">[ Credits & FAQ ]</button>
+        </div>
+
+        <div id="screen-soundcheck" class="screen">
+            <h2>Soundcheck // Load Your Stems</h2>
+            <div class="slots-container">
+                <div class="instrument-slot"><span>🎸 LEAD GUITAR:</span><span class="file-name"></span><button class="btn load-btn" onclick="loadFile(this)">Load...</button></div>
+                <div class="instrument-slot"><span>🎸 BASS GUITAR:</span><span class="file-name"></span><button class="btn load-btn" onclick="loadFile(this)">Load...</button></div>
+                <div class="instrument-slot"><span>🥁 DRUMS:</span><span class="file-name"></span><button class="btn load-btn" onclick="loadFile(this)">Load...</button></div>
+                <div class="instrument-slot"><span>🎹 KEYS/PIANO:</span><span class="file-name"></span><button class="btn load-btn" onclick="loadFile(this)">Load...</button></div>
+                <div class="instrument-slot"><span>🎤 VOCALS:</span><span class="file-name"></span><button class="btn load-btn" onclick="loadFile(this)">Load...</button></div>
+                <div class="instrument-slot"><span>🎶 FULL SONG MIX:</span><span class="file-name"></span><button class="btn load-btn" onclick="loadFile(this)">Load...</button></div>
+            </div>
+            <button class="btn" onclick="showScreen('screen-processing')">[ Build The Chart! ]</button>
+        </div>
+
+        <div id="screen-processing" class="screen">
+            <h2>Building Chart... Get Ready to Rock!</h2>
+            <div class="rocker-animation">
+                <div class="rocker-hair"></div>
+                <div class="rocker-head"></div>
+            </div>
+            <div class="progress-bar">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+            </div>
+            <p id="status-text"></p>
+        </div>
+
+        <div id="screen-preview" class="screen">
+             <h2>Chart Complete! // Preview</h2>
+             <div class="tabs">
+                 <div class="tab active">GUITAR</div>
+                 <div class="tab">PRO DRUMS</div>
+                 <div class="tab">KEYBOARD</div>
+             </div>
+             <div class="preview-content">
+                 <span>[ Static Piano Roll Image Preview Would Appear Here ]</span>
+             </div>
+             <button class="btn" onclick="alert('Chart file saved!')">[ Save .chart File ]</button>
+        </div>
+    </div>
+    
+    <div id="faq-modal" class="modal" onclick="closeModal(event, 'faq-modal')">
+        <div class="modal-content">
+            <h3>7-Bit Rocker - FAQ</h3>
+            <p><strong>WHY "7-BIT ROCKER"?</strong><br>
+            8-BIT IS THE 'COMPLETE' STANDARD. THIS PROGRAM GIVES YOU A '7-BIT' CHART—AN ALMOST-PERFECT FOUNDATION. THE FINAL 'BIT' OF POLISH AND CREATIVITY COMES FROM YOU, THE USER.</p>
+             <p><strong>HOW DOES IT WORK?</strong><br>
+            7BR USES A TEAM OF PRE-TRAINED AI MODELS TO 'LISTEN' TO YOUR AUDIO FILES. EACH MODEL IS AN EXPERT AT A SPECIFIC INSTRUMENT AND TRANSLATES THE MUSIC INTO A PLAYABLE CHART.</p>
+            <p><strong>IS IT STANDALONE?</strong><br>
+            YES. 7BR IS 100% STANDALONE. ALL AI MODELS ARE BUNDLED WITH THE PROGRAM. IT DOES NOT REQUIRE AN INTERNET CONNECTION TO FUNCTION.</p>
+            <button class="btn modal-close" onclick="closeModal(event, 'faq-modal', true)">[ Close ]</button>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            
+            if (screenId === 'screen-processing') {
+                simulateProcessing();
+            }
+        }
+
+        function loadFile(buttonElement) {
+            const fileNameDisplay = buttonElement.previousElementSibling;
+            fileNameDisplay.textContent = 'song-part.flac';
+            buttonElement.textContent = 'Change...';
+        }
+
+        function simulateProcessing() {
+            const progressBar = document.getElementById('progress-bar-fill');
+            const statusText = document.getElementById('status-text');
+            progressBar.style.width = '0%';
+            
+            const tasks = [
+                { name: '> Analyzing Drum Track with AI...', duration: 2000, progress: 20 },
+                { name: '> Transcribing Piano Chords...', duration: 2500, progress: 45 },
+                { name: '> Tracing Guitar Riffs...', duration: 1500, progress: 60 },
+                { name: '> Running Pattern Consistency Pass...', duration: 2000, progress: 80 },
+                { name: '> Generating Difficulty Levels...', duration: 1500, progress: 95 },
+                { name: '> Finalizing Chart File...', duration: 500, progress: 100 }
+            ];
+
+            let currentTask = 0;
+            function runTask() {
+                if (currentTask < tasks.length) {
+                    const task = tasks[currentTask];
+                    statusText.textContent = task.name;
+                    progressBar.style.width = task.progress + '%';
+                    currentTask++;
+                    setTimeout(runTask, task.duration);
+                } else {
+                    statusText.textContent = 'Chart Complete!';
+                    setTimeout(() => showScreen('screen-preview'), 1000);
+                }
+            }
+            runTask();
+        }
+
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(event, modalId, isButtonClick = false) {
+             if (event.target.id === modalId || isButtonClick) {
+                document.getElementById(modalId).style.display = 'none';
+             }
+        }
+    </script>
+</body>
+</html>
